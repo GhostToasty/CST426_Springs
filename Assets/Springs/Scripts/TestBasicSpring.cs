@@ -10,7 +10,7 @@ public class TestBasicSpring : MonoBehaviour
     [Header("Spring Settings")]
     public float stiffness = 100f; // k value
     public float mass = 1f; // m value
-    public float damping = 0.1f; // c value
+    public float dampingCoefficient = 0.1f; // c value
 
     [Header("Debug")]
     public LineRenderer maxLine;
@@ -35,15 +35,15 @@ public class TestBasicSpring : MonoBehaviour
         // and the damping force, which opposes the velocity. Keep the velocity in a private
         // _velocity field. Acceleration is the total force divided by mass.
         Vector3 displacement = currentPos - equilibriumTransform.position;
-        Vector3 restoringForce = displacement * stiffness * -1;
-        Vector3 dampingForce = damping * _velocity * -1;
+        Vector3 restoringForce = -stiffness * displacement;
+        Vector3 dampingForce = -dampingCoefficient * _velocity;
         
         Vector3 force = restoringForce + dampingForce;
 
         // TODO: Take a semi-implicit Euler step: update the velocity first, then move with the new
         // velocity.
         Vector3 acceleration = force / mass;
-        _velocity = acceleration * deltaTime;
+        _velocity += acceleration * deltaTime;
         attachmentTransform.position += _velocity * deltaTime;
     }
 
